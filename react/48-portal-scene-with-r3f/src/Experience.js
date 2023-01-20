@@ -11,7 +11,7 @@ export default function Experience() {
     <>
       <color args={["#201919"]} attach="background" />
       <OrbitControls makeDefault />
-      <group>
+      <Center>
         <mesh geometry={nodes.baked.geometry}>
           <meshBasicMaterial map={bakedTexture} />
         </mesh>
@@ -23,11 +23,7 @@ export default function Experience() {
           geometry={nodes.poleLight2.geometry}
           position={nodes.poleLight2.position}
         />
-        <mesh
-          geometry={nodes.Circle.geometry}
-          position={nodes.Circle.position}
-        />
-      </group>
+      </Center>
     </>
   );
 }

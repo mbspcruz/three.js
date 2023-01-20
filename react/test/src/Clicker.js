@@ -1,16 +1,29 @@
 import { useState } from "react";
+import { useEffect } from "react";
 
-export default function Clicker() {
-  const countState = useState(0);
-  const count = countState[0];
-  const setCount = countState[1];
+export default function Clicker({ keyName, color }) {
+  const [count, setCount] = useState(
+    parseInt(localStorage.getItem(keyName) ?? 0)
+  );
+
+  useEffect(() => {
+    return () => {
+      localStorage.removeItem(keyName, count);
+    };
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem(keyName, count);
+  }, [count]);
 
   const buttonClick = () => {
     setCount(count + 1);
   };
   return (
     <div className="flex justify-center mt-3">
-      <div className="p-3 ">Clicks count: {count}</div>
+      <div className="p-3 " style={{ color }}>
+        Clicks count: {count}
+      </div>
       <button
         onClick={buttonClick}
         className=" p-2  border border-black rounded-md "

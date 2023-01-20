@@ -7,6 +7,6 @@ const toto = "tata";
 
 root.render(
   <div>
-    <App></App>
+    <App children={<h1>Ola</h1>}></App>
   </div>
 );
