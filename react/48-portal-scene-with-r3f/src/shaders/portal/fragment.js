@@ -1,6 +1,8 @@
 export default /*glsl*/ `uniform float uTime;
+uniform float uTest;
 uniform vec3 uColorStart;
 uniform vec3 uColorEnd;
+
 
 varying vec2 vUv;
 
@@ -81,13 +83,14 @@ float cnoise(vec3 P)
     return 2.2 * n_xyz;
 }
 
+
 void main()
 {
     // Displace the UV
     vec2 displacedUv = vUv + cnoise(vec3(vUv * 5.0, uTime * 0.1));
 
     // Perlin noise
-    float strength = cnoise(vec3(displacedUv * 5.0, uTime * 0.2));
+    float strength = cnoise(vec3(displacedUv * 5.0, uTime * uTest));
 
     // Outer glow
     float outerGlow = distance(vUv, vec2(0.5)) * 5.0 - 1.4;
