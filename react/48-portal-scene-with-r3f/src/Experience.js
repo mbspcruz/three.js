@@ -5,7 +5,6 @@ import {
   useGLTF,
   OrbitControls,
   Sparkles,
-  MeshDistortMaterial,
   GradientTexture,
 } from "@react-three/drei";
 import portalVertexShader from "./shaders/portal/vertex.js";
@@ -14,6 +13,7 @@ import * as THREE from "three";
 import { extend, useFrame } from "@react-three/fiber";
 import { useRef } from "react";
 import { useControls } from "leva";
+import { DoubleSide } from "three";
 
 const PortalMaterial = shaderMaterial(
   {
@@ -29,21 +29,17 @@ extend({ PortalMaterial });
 
 export default function Experience() {
   const { bgLight, bgDark, portalLightIn, portalLightOut } = useControls({
-    bgLight: "#ffffff",
     bgDark: "#6f4e4e",
-    portalLightIn: "#380015",
-    portalLightOut: "#ada8a5",
+    bgLight: "#ffffff",
   });
 
   const portalMaterial = useRef();
   const { nodes } = useGLTF("./model/portalSceneup.glb");
-  console.log(portalMaterial);
   const bakedTexture = useTexture("./model/bake.jpg");
   bakedTexture.flipY = false;
   useFrame((state, delta) => {
     portalMaterial.current.uTime += delta;
   });
-
   const eventHandler = () => {
     portalMaterial.current.uniforms.uColorStart.value = new THREE.Color(
       "hsl(	265.3, 33.1%, 49.2%)"
@@ -74,29 +70,20 @@ export default function Experience() {
         colors={[bgDark, bgLight]} // Colors need to match the number of stops
         size={1024}
       />
-      {/* <color args={["#3D3D3D"]} attach="background" /> */}
-      <OrbitControls makeDefault />
+      <OrbitControls maxPolarAngle={Math.PI / 2} />
       <Center>
-        <mesh geometry={nodes.baked.geometry}>
+        <mesh geometry={nodes.baked.geometry} position={nodes.baked.position}>
           <meshBasicMaterial map={bakedTexture} />
         </mesh>
         <mesh
           geometry={nodes.poleLigh1.geometry}
-          position={[
-            nodes.poleLigh1.position.x + 0.02,
-            nodes.poleLigh1.position.y - 0.84,
-            nodes.poleLigh1.position.z - 1.563,
-          ]}
+          position={nodes.poleLigh1.position}
         >
           <meshBasicMaterial color={"#ffffe5"} />
         </mesh>
         <mesh
           geometry={nodes.poleLight2.geometry}
-          position={[
-            nodes.poleLight2.position.x + 0.02,
-            nodes.poleLight2.position.y - 0.84,
-            nodes.poleLight2.position.z - 1.563,
-          ]}
+          position={nodes.poleLight2.position}
         >
           <meshBasicMaterial color={"#ffffe5"} />
         </mesh>
@@ -104,13 +91,9 @@ export default function Experience() {
           onPointerEnter={eventHandler}
           onPointerOut={outsideHandler}
           geometry={nodes.Circle.geometry}
-          position={[
-            nodes.Circle.position.x + 0.02,
-            nodes.Circle.position.y - 0.84,
-            nodes.Circle.position.z - 1.563,
-          ]}
+          position={nodes.Circle.position}
         >
-          <portalMaterial ref={portalMaterial} />
+          <portalMaterial ref={portalMaterial} side={DoubleSide} />
         </mesh>
         <Sparkles
           size={6}
